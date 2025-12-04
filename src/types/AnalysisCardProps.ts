@@ -1,18 +1,3 @@
-export interface ProductAnalysisCardProps {
-  imageUrl: string;
-  title: string;
-  price: number;
-  originalPrice?: number;
-  discount?: string;
-  rating: number;
-  reviewCount: number;
-  storeName: string;
-  verifiedStore?: boolean;
-  aiScamScore: number;
-  riskLabel?: string;
-  productLink: string;
-}
-
 export interface AnalysisCardProps {
   reviewScore?: number; // 0-100%
   repeatedReviewPct?: number;

@@ -6,7 +6,7 @@ import { IoStorefrontOutline } from "react-icons/io5";
 import { MdVerified, MdVerifiedUser } from "react-icons/md";
 import ScanNowButton from "../Button/ScanNowButton";
 import ShareButton from "../Button/ShareButton";
-import { ProductAnalysisCardProps } from "@/types";
+import { ProductAnalysisCardProps } from "@/types/ProductAnalysisCardProps";
 
 export default function ProductAnalysisCard({
   imageUrl,
@@ -22,11 +22,9 @@ export default function ProductAnalysisCard({
   riskLabel = "Low Risk",
   productLink,
 }: ProductAnalysisCardProps) {
-  // ✅ Safe rating logic to avoid RangeError
-  const safeRating =
-    typeof rating === "number" && !isNaN(rating)
-      ? Math.min(Math.max(rating, 0), 5)
-      : 0;
+  const safeRating = typeof rating === "number" && !isNaN(rating)
+    ? Math.min(Math.max(rating, 0), 5)
+    : 0;
 
   const fullStars = Math.floor(safeRating);
   const hasHalfStar = safeRating - fullStars >= 0.5;
@@ -48,8 +46,8 @@ export default function ProductAnalysisCard({
           {/* Product Image */}
           <div className="w-full h-80">
             <Image
-              src={imageUrl}
-              alt={title}
+              src={imageUrl || '/logo/logo.png'}
+              alt={title || 'Product Image'}
               height={100}
               width={100}
               className="w-full h-full object-contain rounded-xl border border-gray-200"
@@ -58,17 +56,13 @@ export default function ProductAnalysisCard({
 
           {/* Product Info */}
           <div className="md:col-span-2 space-y-4">
-            <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-              {title}
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 leading-tight">{title}</h1>
 
             {/* Price Section */}
             <div className="flex items-baseline gap-3">
               <span className="text-4xl font-bold text-blue-600">${price}</span>
               {originalPrice && (
-                <span className="text-xl text-gray-400 line-through">
-                  ${originalPrice}
-                </span>
+                <span className="text-xl text-gray-400 line-through">${originalPrice}</span>
               )}
               {discount && (
                 <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
@@ -81,19 +75,13 @@ export default function ProductAnalysisCard({
             <div className="flex items-center gap-4 pt-2">
               <div className="flex items-center gap-2">
                 <div className="flex">
-                  {Array(fullStars)
-                    .fill(0)
-                    .map((_, i) => (
-                      <FaStar key={i} className="text-yellow-400 text-xl" />
-                    ))}
-                  {hasHalfStar && (
-                    <FaStar className="text-yellow-400 text-xl opacity-50" />
-                  )}
-                  {Array(emptyStars)
-                    .fill(0)
-                    .map((_, i) => (
-                      <FaStar key={i} className="text-gray-300 text-xl" />
-                    ))}
+                  {Array(fullStars).fill(0).map((_, i) => (
+                    <FaStar key={i} className="text-yellow-400 text-xl" />
+                  ))}
+                  {hasHalfStar && <FaStar className="text-yellow-400 text-xl opacity-50" />}
+                  {Array(emptyStars).fill(0).map((_, i) => (
+                    <FaStar key={i} className="text-gray-300 text-xl" />
+                  ))}
                 </div>
                 <span className="text-lg font-semibold text-gray-900">{safeRating}</span>
                 <span className="text-gray-500">({reviewCount || 0} reviews)</span>
@@ -110,7 +98,7 @@ export default function ProductAnalysisCard({
             {/* Buttons */}
             <div className="pt-4 flex gap-4">
               <ScanNowButton
-                title="View on Amazon"
+                title="View on Flipkart"
                 className="flex-1 shadow-lg hover:shadow-xl"
                 link={productLink}
               />
