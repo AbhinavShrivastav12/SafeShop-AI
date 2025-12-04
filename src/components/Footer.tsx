@@ -1,47 +1,65 @@
+import Image from "next/image";
+import Link from "next/link";
+import { FaFacebookF, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+
 export default function Footer() {
-  return (
-    <footer className="bg-gray-50 border-t border-gray-200 mt-20 py-16">
-      <div className="max-w-7xl mx-auto px-8 grid md:grid-cols-4 gap-12">
-        <div>
-          <div className="flex items-center gap-2 font-bold text-xl">
-            <span className="text-blue-500">🛡️</span> SafeShop AI
+  return(
+    <footer className="bg-gray-900 text-white py-20 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+          <div className="space-y-3">
+            <div>
+              <Link href="/" className="flex items-center gap-3">
+              <Image src="/logo/logo.png" alt="" height={25} width={25} />
+              <span className="text-2xl font-bold">
+                SafeShop AI
+              </span>
+              </Link>
+            </div>
+            <p className="text-gray-400 text-sm">
+              AI-Powered Shopping Protection
+            </p>
           </div>
-          <p className="text-gray-500 mt-2">Your AI guardian against online scams</p>
+          <div className="flex gap-4">
+            <a href="#" className="w-10 h-10 border-2 border-gray-700 rounded-full flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors">
+              <i className="ri-twitter-x-line text-lg">
+                <FaXTwitter />
+              </i>
+            </a>
+             <a href="#" className="w-10 h-10 border-2 border-gray-700 rounded-full flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors">
+              <i className="ri-facebook-fill text-lg">
+                <FaFacebookF />
+              </i>
+            </a>
+            <a href="#" className="w-10 h-10 border-2 border-gray-700 rounded-full flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors">
+              <i className="ri-linkedin-fill text-lg">
+                <FaLinkedinIn />
+              </i>
+            </a>
+          </div>
         </div>
-        <div>
-          <h4 className="font-semibold mb-3">Product</h4>
-          <ul className="flex flex-col gap-2 text-gray-600">
-            <li>How It Works</li>
-            <li>Features</li>
-            <li>Pricing</li>
-            <li>Browser Extension</li>
-            <li>API</li>
-          </ul>
+        <div className="border-t border-gray-800 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">
+              © 2025 SafeShop AI. Made with ❤️ by Abhinav
+            </p>
+            <div className="flex gap-8">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">
+                FAQs
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">
+                Contact
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">
+                Terms
+              </a>
+            </div>
+          </div>
         </div>
-        <div>
-          <h4 className="font-semibold mb-3">Support</h4>
-          <ul className="flex flex-col gap-2 text-gray-600">
-            <li>Help Center</li>
-            <li>Contact Us</li>
-            <li>Report a Bug</li>
-            <li>Privacy Policy</li>
-            <li>Terms of Service</li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold mb-3">Company</h4>
-          <ul className="flex flex-col gap-2 text-gray-600">
-            <li>About Us</li>
-            <li>Blog</li>
-            <li>Careers</li>
-            <li>Press Kit</li>
-            <li>Partners</li>
-          </ul>
-        </div>
-      </div>
-      <div className="mt-12 text-center text-gray-400 text-sm">
-        © 2025 SafeShop AI. All rights reserved.
       </div>
     </footer>
-  );
+  )
 }
