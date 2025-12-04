@@ -6,8 +6,12 @@ export default function HomePage() {
   return (
     <>
     <TopSection/>
-    <HowItWorks/>
-    <AboutUs/>
+    <div id="how-it-works">
+      <HowItWorks/>
+    </div>
+    <div id="about-us">
+       <AboutUs/>
+    </div>
     </>
   );
 }

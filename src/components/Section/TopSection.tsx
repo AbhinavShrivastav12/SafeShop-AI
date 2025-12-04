@@ -1,11 +1,22 @@
+"use client"
 import Image from "next/image";
 import Input from "../Input";
 import ScanNowButton from "../Button/ScanNowButton";
 import { CgDanger } from "react-icons/cg";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function TopSection() {
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
+    const [productLink, setProductLink] = useState("");
+
+    const handleSubmit = () => {
+      if(!productLink) return alert("Please paste a product link!")
+        router.push(`/scanResult?link=${encodeURIComponent(productLink)}`)
+    }
     return(
-          <section className="relative pt-32 pb-20 px-6 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-teal-50  ">
+          <section ref={sectionRef} id="scan" className="relative pt-32 pb-20 px-6 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-teal-50  ">
             <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-transparent"></div>
               <div className="max-w-7xl mx-auto relative z-10">
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -32,8 +43,8 @@ export default function TopSection() {
                   <p className=" text-xl text-gray-600 leading-relaxed max-w-xl"> Instant AI check for fake reviews, scam sellers & low-quality products. </p>
                   {/* Input Field */}
                   <div className="bg-white rounded-2xl shadow-2xl p-2 flex items-center gap-2 max-w-2xl">
-                    <Input placeholder="https://amazon.com/your-product-link"/>
-                    <ScanNowButton title="Scan Now"/>
+                    <Input placeholder="https://amazon.com/your-product-link" onChange={setProductLink}/>
+                    <ScanNowButton title="Scan Now" onClick={handleSubmit}/>
                   </div>
                   <p className="text-sm text-gray-500 flex items-center gap-2">
                     <i className="ri-alert-line text-orange-500"><CgDanger /></i>
