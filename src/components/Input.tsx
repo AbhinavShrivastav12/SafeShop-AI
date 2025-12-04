@@ -1,13 +1,20 @@
 'use client';
 import React from 'react';
 
-export default function Input({ value, onChange, placeholder }: { value: string; onChange: (v:string)=>void; placeholder?: string }) {
+interface InputProps {
+  title?: string;
+  placeholder?: string;
+  onChange?: (value:string) => void
+  className?: string;
+}
+
+export default function Input({ title, onChange, placeholder,className }:InputProps) {
   return (
-    <input
-      className="w-full rounded-md border border-slate-200 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-      value={value}
-      onChange={(e)=>onChange(e.target.value)}
-      placeholder={placeholder || 'Paste product URL or JSON of reviews...'}
+      <input
+      className={` flex-1 px-6 py-4 text-base outline-none text-gray-700 placeholder-gray-400 transition-all ${className}`}
+      title={title}
+      onChange={(e)=>onChange?.(e.target.value)}
+      placeholder={placeholder}
     />
   );
 }
