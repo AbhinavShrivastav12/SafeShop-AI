@@ -12,8 +12,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <div className='min-h-screen bg-white'>
+      <body suppressHydrationWarning={true}>
+        <div className='min-h-screen bg-gray-50'>
            <Navbar/>
         <main>
           {children}
