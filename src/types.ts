@@ -1,23 +1,27 @@
-export interface Product {
+export interface ProductAnalysisCardProps {
+  imageUrl: string;
   title: string;
-  price: string;
-  image: string;
-  seller: string;
+  price: number;
+  originalPrice?: number;
+  discount?: string;
   rating: number;
+  reviewCount: number;
+  storeName: string;
+  verifiedStore?: boolean;
+  aiScamScore: number;
+  riskLabel?: string;
+  productLink: string;
 }
 
-export interface Alternative {
-  title: string;
-  price: string;
-  link: string;
-  image: string;
-}
-
-export interface ScanResult {
-  product: Product;
-  scamRisk: number;
-  fakeReviewProbability: number;
-  qualityScore: number;
-  reasoning: string;
-  alternatives: Alternative[];
+export interface AnalysisCardProps {
+  reviewScore?: number; // 0-100%
+  repeatedReviewPct?: number;
+  repeatedPatterns?: string[];
+  sellerTrust?: string;
+  sellerAge?: string;
+  complaintHistory?: string;
+  refundRate?: string;
+  deliveryIssues?: string;
+  productQualityScore?: number; // 0-10
+  qualityNotes?: string[];
 }
