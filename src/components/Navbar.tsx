@@ -24,7 +24,7 @@ export default function Navbar() {
           <Link href="#blog" className="text-gray-600 hover:text-blue-500">Blog</Link>
           <Link href="#about" className="text-gray-600 hover:text-blue-500">About</Link>
         </nav>
-        <ScanProductButton text="Scan Product" icon={<VscSearch />} className="rounded-4xl text-white " onClick={handleSubmit}/>
+        <ScanProductButton title="Scan Product" icon={<VscSearch />} className="rounded-4xl text-white " onClick={handleSubmit}/>
       </div>
     </header>
   );
