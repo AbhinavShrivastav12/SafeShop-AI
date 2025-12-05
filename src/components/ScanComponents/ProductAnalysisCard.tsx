@@ -7,7 +7,7 @@ import { MdVerifiedUser } from "react-icons/md";
 import ScanNowButton from "../Button/ScanNowButton";
 import ShareButton from "../Button/ShareButton";
 import { ProductAnalysisCardProps } from "@/types/ProductAnalysisCardProps";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProductAnalysisSkeleton from "../Skeleton/ProductAnalysisSkeleton";
 
 
@@ -42,40 +42,42 @@ export default function ProductAnalysisCard({ product }: Props) {
     ? imageUrl!.replace('http://', 'https://')
     : imageUrl || '/logo/logo.png';
 
+      const stableProduct = useRef(product);
+
   useEffect(() => {
-    const scanWithAI = async () => {
-      setLoading(true);
-      setError(false);
+  const scanWithAI = async () => {
+    setLoading(true);
+    setError(false);
 
-      try {
-        const res = await fetch("/api/ai-score", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ product }),
-        });
+    try {
+      const res = await fetch("/api/ai-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product: stableProduct.current }),
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (res.ok && data.scam_score !== undefined && data.risk_label) {
-          setAiScore(data.scam_score);
-          setRiskLabel(data.risk_label);
-        } else {
-          setAiScore(null);
-          setRiskLabel("Unavailable");
-          setError(true);
-        }
-      } catch (err) {
-        console.error("AI Error:", err);
+      if (data.success) {
+        setAiScore(data.scam_score);
+        setRiskLabel(data.risk_label);
+      } else {
         setAiScore(null);
         setRiskLabel("Unavailable");
         setError(true);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      setAiScore(null);
+      setRiskLabel("Unavailable");
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    scanWithAI();
-  }, [product]);
+  scanWithAI();
+}, []); // run only once
+
 
   // Show skeleton while loading
   if (loading) return <ProductAnalysisSkeleton />;
