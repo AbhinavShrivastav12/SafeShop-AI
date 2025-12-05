@@ -34,7 +34,7 @@ export default function Footer() {
               </i>
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com/in/abhinavshrivastav383g/" target="_blank"
               className="w-10 h-10 border-2 border-gray-700 rounded-full flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors">
               <i className="ri-linkedin-fill text-lg">
                 <FaLinkedinIn />
@@ -48,21 +48,23 @@ export default function Footer() {
               © 2025 SafeShop AI. Made with ❤️ by Abhinav
             </p>
             <div className="flex gap-8">
-              <a
+              <Link
                 href="#about-us"
                 className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap cursor-pointer">
                 About
-              </a>
-              <a
-                href="#"
+              </Link>
+
+              <Link
+                href="/privacy-policy"
                 className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">
                 Privacy Policy
-              </a>
-              <a
-                href="#"
+              </Link>
+
+               <Link
+                href="/terms" passHref
                 className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">
                 Terms
-              </a>
+              </Link>
             </div>
           </div>
         </div>
