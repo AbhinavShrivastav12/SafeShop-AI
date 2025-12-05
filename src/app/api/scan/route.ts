@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import fetch from "node-fetch";
 import * as cheerio from "cheerio";
 
 export const runtime = "nodejs";
@@ -9,13 +8,10 @@ export async function POST(req: Request) {
     const { url } = await req.json();
     if (!url) return NextResponse.json({ success: false, data: null });
 
-    const res = await fetch(url, {
-      headers: {
-       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      },
-    });
+    // Use ScraperAPI proxy
+    const proxyUrl = `https://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(url)}&country=IN`;
+
+    const res = await fetch(proxyUrl);
 
     const html = await res.text();
     const $ = cheerio.load(html);
@@ -32,48 +28,49 @@ export async function POST(req: Request) {
           productData = json;
         }
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
     });
 
-   if (!productData) {
-  // Fallback: try HTML selectors
-  const title = $('span.B_NuCI').text().trim() || null;
-  const price = $('div._30jeq3').first().text().trim() || null;
+    if (!productData) {
+      const title = $("span.B_NuCI").text().trim() || null;
+      const price = $("div._30jeq3").first().text().trim() || null;
 
-  if (title || price) {
-    return NextResponse.json({
-      success: true,
-      data: {
-        title,
-        currentPrice: price,
-        crossedPrice: null,
-        discount: null,
-        rating: null,
-        reviewCount: null,
-        storeName: null,
-        imageUrl: null,
-      },
-    });
-  }
+      if (title || price) {
+        return NextResponse.json({
+          success: true,
+          data: {
+            title,
+            currentPrice: price,
+            crossedPrice: null,
+            discount: null,
+            rating: null,
+            reviewCount: null,
+            storeName: null,
+            imageUrl: null,
+          },
+        });
+      }
 
-  return NextResponse.json({ success: true, data: null });
-}
-
+      return NextResponse.json({ success: true, data: null });
+    }
 
     // Crossed price
     let crossedPrice: string | null = null;
-    $('span').each((_, el) => {
+    $("span").each((_, el) => {
       const text = $(el).text().trim();
-      if (text.startsWith("₹") && $(el).css("text-decoration")?.includes("line-through")) {
+      if (
+        text.startsWith("₹") &&
+        $(el).attr("style")?.includes("line-through")
+      ) {
         crossedPrice = text;
-        return false; // break
+        return false;
       }
     });
 
     // Discount
     let discount: string | null = null;
-    $('span').each((_, el) => {
+    $("span").each((_, el) => {
       const text = $(el).text().trim();
       if (/(\d+)%\s*OFF/i.test(text)) {
         discount = text;
@@ -83,7 +80,10 @@ export async function POST(req: Request) {
 
     // Store name
     let storeName: string | null = null;
-    const sellerText = $('._3WhJ, ._2u0jt, span:contains("Seller")').first().text().trim();
+    const sellerText = $('._3WhJ, ._2u0jt, span:contains("Seller")')
+      .first()
+      .text()
+      .trim();
     if (sellerText) storeName = sellerText.replace(/Sold by\s*/i, "") || null;
 
     const data = {
