@@ -6,7 +6,7 @@ import { MdVerifiedUser } from "react-icons/md";
 
 export default function ProductAnalysisSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-3xl shadow-xl flex flex-col md:flex-row gap-6 animate-pulse relative">
+    <div className="max-w-4xl mx-auto px-6 pt-32  bg-white rounded-3xl shadow-xl flex flex-col md:flex-row gap-6 animate-pulse relative">
       
       {/* Skeleton AI Score */}
       {/* Full-width on small screens, floating on md+ */}
