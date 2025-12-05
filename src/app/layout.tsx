@@ -13,10 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
+      <head>
+          <link rel="icon" href="/logo/logo.png"/>
+      </head>
       <body suppressHydrationWarning={true}>
-        <div className='flex flex-col min-h-screen bg-gray-50'>
+        <div className='md:flex md:flex-col min-h-screen bg-gray-50'>
            <Navbar/>
-        <main className='flex-grow'>
+        <main className='md:flex-grow'>
           {children}
            <Toaster position="top-center" />
         </main>

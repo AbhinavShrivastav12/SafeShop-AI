@@ -77,6 +77,7 @@ export default function ProductAnalysisCard({ product }: Props) {
 
   scanWithAI();
 }, []); // run only once
+const safeProductLink = productLink || window.location.href;
 
 
   // Show skeleton while loading
@@ -141,7 +142,19 @@ export default function ProductAnalysisCard({ product }: Props) {
         {/* Buttons */}
         <div className="flex flex-col md:flex-row gap-4 pt-4">
           <ScanNowButton title="View on Flipkart" className="flex-1 text-center text-lg md:text-2xl shadow-lg hover:shadow-xl" link={productLink} />
-          <ShareButton />
+        <ShareButton
+    product={{
+        title,
+        currentPrice: currentPrice || "",
+        crossedPrice: crossedPrice || "",
+        discount: discount || "",
+        storeName: storeName || "",
+        aiScore,
+        riskLabel,
+        productLink: safeProductLink,
+    }}
+/>
+
         </div>
       </div>
     </div>
