@@ -31,7 +31,7 @@ export default function ScanResultClient() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const resProduct = await fetch("/api/scan", {
+        const resProduct = await fetch(`${window.location.origin}/api/scan`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: productUrl }),
