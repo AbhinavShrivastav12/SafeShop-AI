@@ -1,103 +1,81 @@
 import { NextResponse } from "next/server";
-import { chromium, devices } from "playwright";
-
-export const maxDuration = 60; // Vercel/Prod-safe timeout
+import fetch from "node-fetch";
+import * as cheerio from "cheerio";
 
 export async function POST(req: Request) {
-  const { url } = await req.json();
-
-  if (!url)
-    return NextResponse.json({ error: "URL is required" }, { status: 400 });
-
-  let browser;
   try {
-    browser = await chromium.launch({ headless: true });
+    const { url } = await req.json();
+    if (!url) return NextResponse.json({ success: false, data: null });
 
-    const context = await browser.newContext({
-      userAgent:
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-      viewport: { width: 1280, height: 720 },
-      javaScriptEnabled: true,
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      },
     });
 
-    const page = await context.newPage();
+    const html = await res.text();
+    const $ = cheerio.load(html);
 
-    // ❗ Flipkart blocks empty pages — so wait for DOM
-    await page.goto(url, {
-      waitUntil: "domcontentloaded",
-      timeout: 30000,
+    // JSON-LD Product
+    let productData: any = null;
+    $('script[type="application/ld+json"]').each((_, el) => {
+      try {
+        const json = JSON.parse($(el).html() || "");
+        if (Array.isArray(json)) {
+          const product = json.find((item: any) => item["@type"] === "Product");
+          if (product) productData = product;
+        } else if (json["@type"] === "Product") {
+          productData = json;
+        }
+      } catch (err) {
+        console.error(err)
+      }
     });
 
-    // Fallback: sometimes Flipkart loads data slowly
-    await page.waitForTimeout(2000);
+    if (!productData) return NextResponse.json({ success: true, data: null });
 
-    // Helper functions executed inside browser
-    const scrape = await page.evaluate(() => {
-      const txt = (sel: string) =>
-        document.querySelector(sel)?.textContent?.trim() || null;
-
-      const attr = (sel: string, key: string) =>
-        document.querySelector(sel)?.getAttribute(key) || null;
-
-      return {
-        title: txt("span.B_NuCI"),
-        currentPrice: txt("div._30jeq3._16Jk6d"),
-        crossedPrice: txt("div._3I9_wc"),
-        rating: txt("div._3LWZlK"),
-        reviewCount: txt("span._2_R_DZ span:nth-child(2)"),
-        imageUrl:
-          attr("img._396cs4._2amPTt._3qGmMb", "src") ||
-          attr("img._396cs4", "src") ||
-          null,
-      };
+    // Crossed price
+    let crossedPrice: string | null = null;
+    $('span').each((_, el) => {
+      const text = $(el).text().trim();
+      if (text.startsWith("₹") && $(el).css("text-decoration")?.includes("line-through")) {
+        crossedPrice = text;
+        return false; // break
+      }
     });
 
-    // EXTRA: retry with mobile browser if desktop fails
-    if (!scrape.title) {
-      const mobileContext = await browser.newContext({
-        ...devices["iPhone 12"],
-      });
-      const mobilePage = await mobileContext.newPage();
+    // Discount
+    let discount: string | null = null;
+    $('span').each((_, el) => {
+      const text = $(el).text().trim();
+      if (/(\d+)%\s*OFF/i.test(text)) {
+        discount = text;
+        return false;
+      }
+    });
 
-      await mobilePage.goto(url, {
-        waitUntil: "domcontentloaded",
-        timeout: 30000,
-      });
+    // Store name
+    let storeName: string | null = null;
+    const sellerText = $('._3WhJ, ._2u0jt, span:contains("Seller")').first().text().trim();
+    if (sellerText) storeName = sellerText.replace(/Sold by\s*/i, "") || null;
 
-      await mobilePage.waitForTimeout(2000);
+    const data = {
+      title: productData.name ?? null,
+      imageUrl: productData.image ?? null,
+      rating: productData.aggregateRating?.ratingValue?.toString() ?? null,
+      reviewCount: productData.aggregateRating?.reviewCount?.toString() ?? null,
+      currentPrice: productData.offers?.price
+        ? `₹${productData.offers.price}`
+        : null,
+      crossedPrice,
+      discount,
+      storeName,
+    };
 
-      const mobileScrape = await mobilePage.evaluate(() => {
-        const txt = (sel: string) =>
-          document.querySelector(sel)?.textContent?.trim() || null;
-
-        const attr = (sel: string, key: string) =>
-          document.querySelector(sel)?.getAttribute(key) || null;
-
-        return {
-          title: txt("span.B_NuCI"),
-          currentPrice: txt("div._30jeq3._16Jk6d"),
-          crossedPrice: txt("div._3I9_wc"),
-          rating: txt("div._3LWZlK"),
-          reviewCount: txt("span._2_R_DZ span:nth-child(2)"),
-          imageUrl:
-            attr("img._2r_T1I", "src") ||
-            attr("img._396cs4", "src") ||
-            null,
-        };
-      });
-
-      await mobileContext.close();
-      return NextResponse.json({ success: true, data: mobileScrape });
-    }
-
-    return NextResponse.json({ success: true, data: scrape });
-  } catch (error) {
-    console.error("Scraper Error:", error);
-    return NextResponse.json(
-      { success: false, error: "Scraper failed on server." },
-      { status: 500 }
-    );
-  } finally {
-    browser?.close();
+    return NextResponse.json({ success: true, data });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ success: false, data: null });
   }
 }

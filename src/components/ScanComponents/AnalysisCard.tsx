@@ -1,6 +1,6 @@
 'use client'
 
-import { AnalysisCardProps } from "@/types";
+import { AnalysisCardProps } from "@/types/AnalysisCardProps";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { FaSearch } from "react-icons/fa";
 import { FiClock } from "react-icons/fi";

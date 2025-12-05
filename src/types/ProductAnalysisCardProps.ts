@@ -1,9 +1,9 @@
 export type ProductAnalysisCardProps = {
   title: string;
-  price: string;
-  originalPrice?: string | null;
+  currentPrice: string;
+  crossedPrice?: string | null;
   discount?: string | null;
-  rating: number;
+  rating: number|string;
   reviewCount: number;
   imageUrl: string;
   storeName?: string;

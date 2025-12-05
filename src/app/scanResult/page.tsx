@@ -1,86 +1,63 @@
-'use client';
+'use client'
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import ProductAnalysisCard from "@/components/ScanComponents/ProductAnalysisCard";
+import ProductAnalysisCard, { ProductData } from "@/components/ScanComponents/ProductAnalysisCard";
 import toast from "react-hot-toast";
-import { ProductAnalysisCardProps } from "@/types/ProductAnalysisCardProps";
-
-type ScrapeData = {
-  title?: string | null;
-  currentPrice?: string | null;
-  currentPriceValue?: number | null;
-  crossedPrice?: string | null;
-  crossedPriceValue?: number | null;
-  discount?: string | null;
-  rating?: number | null;
-  reviewCount?: number | null;
-  imageUrl?: string | null;
-  sourceUrl?: string | null;
-};
+import RiskAnalysisReport from "@/components/Section/RiskAnalysisReport";
 
 export default function ScanResultPage() {
   const searchParams = useSearchParams();
-  const productUrl = searchParams.get("url") ? decodeURIComponent(searchParams.get("url")!) : null;
+  const rawUrl = searchParams.get("url"); // get ?url=...
+  
+  // Decode URL safely (handle double encoding)
+  let productUrl: string | null = rawUrl ? decodeURIComponent(rawUrl) : null;
+  if (productUrl && productUrl.includes("%25")) {
+    try { productUrl = decodeURIComponent(productUrl); } catch { }
+  }
 
-  const [product, setProduct] = useState<ProductAnalysisCardProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [product, setProduct] = useState<ProductData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!productUrl || !productUrl.startsWith("http")) {
-      setError("Invalid product URL.");
+    if (!productUrl) {
       setLoading(false);
+      toast.error("Invalid product URL");
       return;
     }
 
     const fetchProduct = async () => {
-      setLoading(true);
-      setError(null);
-
       try {
-        const cacheKey = `scanData-${productUrl}`;
-        const saved = localStorage.getItem(cacheKey);
-        if (saved) {
-          setProduct(JSON.parse(saved));
-          setLoading(false);
-          return;
-        }
-
         const res = await fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: productUrl }),
         });
 
-        const payload = await res.json();
-        if (!payload?.success || !payload?.data) {
-          throw new Error(payload?.error || "Failed to fetch product data");
+        const result = await res.json();
+
+        if (!result.success || !result.data) {
+          toast.error("Could not fetch product data.");
+          setLoading(false);
+          return;
         }
 
-        const scraped: ScrapeData = payload.data;
+        const d = result.data;
 
-        const formatted: ProductAnalysisCardProps = {
-          title: scraped.title || "N/A",
-          price: scraped.currentPrice || "0",
-          originalPrice: scraped.crossedPrice || null,
-          discount: scraped.discount || null,
-          rating: scraped.rating ?? 0,
-          reviewCount: scraped.reviewCount ?? 0,
-          imageUrl: scraped.imageUrl || "/fallback.png",
-          storeName: "Flipkart",
-          verifiedStore: true,
-          aiScamScore: 0,
-          riskLabel: scraped.discount ? "Potential Deal" : "Low Risk",
-          productLink: scraped.sourceUrl || productUrl,
-        };
-
-        setProduct(formatted);
-        localStorage.setItem(cacheKey, JSON.stringify(formatted));
-      } catch (err: any) {
+        setProduct({
+          title: d.title || "No title",
+          currentPrice: d.currentPrice || "N/A",
+          crossedPrice: d.crossedPrice || "—",
+          discount: d.discount || "—",
+          rating: d.rating || "0",
+          reviewCount: d.reviewCount || "0",
+          imageUrl: d.imageUrl || "/fallback.png",
+          storeName: d.storeName || "Unknown Seller",
+          productLink: productUrl,
+        });
+      } catch (err) {
         console.error(err);
-        toast.error(err.message || "Something went wrong while fetching the product.");
-        setError(err.message || "Failed to fetch product.");
+        toast.error("Something went wrong!");
       } finally {
         setLoading(false);
       }
@@ -89,13 +66,13 @@ export default function ScanResultPage() {
     fetchProduct();
   }, [productUrl]);
 
-  if (loading) return <p className="text-center mt-20 text-gray-700">Loading product details...</p>;
-  if (error) return <p className="text-center mt-20 text-red-500">{error}</p>;
+  if (loading) return <p className="text-center mt-20 text-gray-700">Loading product…</p>;
   if (!product) return <p className="text-center mt-20 text-red-500">No product data available.</p>;
 
   return (
-    <div className="max-w-7xl mx-auto px-6">
-      <ProductAnalysisCard {...product} />
+    <div className="max-w-5xl mx-auto px-6 py-10 pt-32">
+      <ProductAnalysisCard product={product} />
+     <div className="pt-15"> <RiskAnalysisReport/></div>
     </div>
   );
 }
