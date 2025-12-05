@@ -1,36 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### Project Description
 
-## Getting Started
+**Concept:**
+This web application is an AI-powered product risk analysis tool designed to help online shoppers make informed purchasing decisions. Users can input a product URL from an e-commerce site, and the app scans the product to evaluate trustworthiness, detect fake reviews, assess seller risk, and provide insights into product quality. The AI analyzes multiple risk factors in seconds, giving users a clear and actionable report.
 
-First, run the development server:
+**Tech Stack:**
+The app is built using **Next.js** and **React**, with **TypeScript** for type safety. **Tailwind CSS** ensures a modern, responsive, and visually appealing user interface. The **OpenAI API** powers the AI analysis, while **react-hot-toast** provides real-time notifications for better user experience. The backend is serverless via Next.js API routes, making the application lightweight and scalable.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Impact:**
+This tool significantly improves online shopping confidence by helping users identify potentially risky products and sellers. Shoppers can avoid fake reviews, misleading pricing, and unreliable sellers, which reduces the chances of poor purchases and financial loss. By delivering instant, AI-generated insights, the app saves users time and helps them make smarter buying choices.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Originality:**
+The combination of AI analysis, automated product evaluation, and a clean, intuitive interface sets this project apart. Unlike other tools that only show ratings or review counts, this app provides a deep, actionable assessment, highlighting patterns, seller reliability, refund rates, and product quality. Its visually clear presentation of AI findings ensures users can quickly understand risk factors without needing technical knowledge.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Summary:**
+In essence, this project blends advanced AI with practical web technology to create a tool that is both innovative and user-friendly. It addresses a common online shopping problem in a meaningful way, delivering real value to users by helping them make informed, safe, and confident purchasing decisions.
