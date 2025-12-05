@@ -36,7 +36,30 @@ export async function POST(req: Request) {
       }
     });
 
-    if (!productData) return NextResponse.json({ success: true, data: null });
+   if (!productData) {
+  // Fallback: try HTML selectors
+  const title = $('span.B_NuCI').text().trim() || null;
+  const price = $('div._30jeq3').first().text().trim() || null;
+
+  if (title || price) {
+    return NextResponse.json({
+      success: true,
+      data: {
+        title,
+        currentPrice: price,
+        crossedPrice: null,
+        discount: null,
+        rating: null,
+        reviewCount: null,
+        storeName: null,
+        imageUrl: null,
+      },
+    });
+  }
+
+  return NextResponse.json({ success: true, data: null });
+}
+
 
     // Crossed price
     let crossedPrice: string | null = null;
