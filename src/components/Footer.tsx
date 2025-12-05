@@ -44,7 +44,7 @@ export default function Footer() {
               © 2025 SafeShop AI. Made with ❤️ by Abhinav
             </p>
             <div className="flex gap-8">
-              <a id="about-us" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap cursor-pointer">
+              <a href="#about-us" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap cursor-pointer">
                 About
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm whitespace-nowrap">

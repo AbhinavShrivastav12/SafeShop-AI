@@ -8,7 +8,10 @@ export type ProductAnalysisCardProps = {
   imageUrl: string;
   storeName?: string;
   verifiedStore?: boolean;
-  aiScamScore?: number;
-  riskLabel?: string;
   productLink?: string;
+
+   reviewScore?: number;          // 0–100
+  sellerTrust?: number|string;          // 0–100
+  productQualityScore?: number;  // 0–10
 };
+

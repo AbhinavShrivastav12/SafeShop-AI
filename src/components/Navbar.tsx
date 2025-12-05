@@ -13,7 +13,7 @@ export default function Navbar() {
         </Link>
         <nav className="hidden md:flex gap-8">
           <Link href="/#how-it-works" className="text-gray-600 hover:text-blue-500">How It Works</Link>
-          <Link href="/#features" className="text-gray-600 hover:text-blue-500">Features</Link>
+          <Link href="/#feature" className="text-gray-600 hover:text-blue-500">Features</Link>
           <Link href="/#about-us" className="text-gray-600 hover:text-blue-500">About</Link>
         </nav>
         <ScanProductButton  title="Scan Product" icon={<VscSearch />} className="rounded-4xl text-white"
